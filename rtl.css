@@ -1,0 +1,10 @@
+.site-rtl-active .fbb737a4,
+.site-rtl-active .ds-assistant-message-main-content {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.site-rtl-active .ds-assistant-message-main-content .md-code-block {
+  direction: ltr !important;
+  text-align: left !important;
+}

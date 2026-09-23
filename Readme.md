@@ -1,186 +1,178 @@
 # Make AIs RTL
 
-A Chrome extension that adds Right-to-Left (RTL) support to AI chatbot websites that don't natively support it.
+A lightweight Chrome extension that adds **Right-to-Left (RTL) support** to AI chat interfaces for Persian and other RTL languages.
 
-![Extension Icon](icons/icon_rtl128.png)
-
-## 📖 Description
-
-This extension allows you to toggle RTL (Right-to-Left) text direction on AI chatbot platforms, making them more accessible for users who read right-to-left languages like Arabic, Persian, Hebrew, and Urdu.
+Make AIs RTL lets you switch supported AI chat platforms between RTL and LTR with one click, while keeping code blocks in their natural **left-to-right (LTR)** direction.
 
 ## ✨ Features
 
-- **One-click toggle** - Click the extension icon to switch between RTL and LTR modes
-- **Persistent settings** - Remembers your preference across browsing sessions
-- **Selective styling** - Applies RTL to user and assistant messages while keeping code blocks LTR
-- **Visual feedback** - Icon changes to indicate current mode (RTL/LTR)
-- **Lightweight** - Minimal performance impact
+- **One-click RTL/LTR toggle** - Switch between RTL and LTR instantly.
+- **RTL support** - Makes AI conversations easier to read in Persian, Arabic, Hebrew, Urdu, and other RTL languages.
+- **Code stays LTR** - Code blocks remain left-to-right even when the surrounding conversation is RTL.
+- **Persistent preference** - Your RTL/LTR preference is stored locally and restored automatically.
+- **Lightweight** - No external libraries, servers, analytics, or tracking.
+- **Privacy-focused** - Conversation content and personal information are never sent to the extension developer or an external server.
 
-## 🚀 Supported Sites
+## 🌐 Supported AI Platforms
 
-| Site                                       | Status       |
+| Platform                                   | Status       |
 | ------------------------------------------ | ------------ |
 | [ChatGPT](https://chatgpt.com)             | ✅ Supported |
 | [DeepSeek Chat](https://chat.deepseek.com) | ✅ Supported |
 
+More AI platforms may be supported in the future.
+
 ## 📥 Installation
 
-### From Chrome Web Store (Recommended)
+### Chrome Web Store
 
-_(Coming soon)_
+**Coming soon.**
 
-### Manual Installation (Developer Mode)
+### Manual Installation
 
-1. Download or clone this repository
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in top right)
-4. Click "Load unpacked"
-5. Select the extension folder
-6. The extension icon will appear in your toolbar
+Until the extension is available on the Chrome Web Store, you can install it manually:
+
+1. Clone or download this repository.
+2. Open `chrome://extensions/` in Chrome.
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Select the extension directory.
+
+The extension will appear in your Chrome toolbar.
 
 ## 🎯 How to Use
 
-1. Navigate to a supported AI chat site (ChatGPT or DeepSeek)
-2. Click the extension icon in your toolbar
-3. The interface will switch to RTL mode
-4. Click again to switch back to LTR mode
+1. Open a supported AI chat platform.
+2. Click the **Make AIs RTL** extension icon.
+3. The supported conversation content will switch to RTL.
+4. Click the icon again to switch back to LTR.
 
-The extension will remember your preference for future visits.
+Your selected direction is saved locally and will be restored when you use the extension again.
+
+### RTL and LTR behavior
+
+When RTL mode is enabled:
+
+- User messages use RTL direction.
+- Assistant messages use RTL direction.
+- Text is right-aligned.
+- Code blocks remain LTR and left-aligned.
+
+For example:
+
+```text
+RTL conversation text
+
+function calculateTotal(items) {
+  return items.reduce((total, item) => total + item.price, 0);
+}
+```
+
+The surrounding conversation can use RTL while the code remains in its natural LTR direction.
+
+## 🔒 Privacy
+
+Make AIs RTL runs locally in your browser.
+
+The extension:
+
+- Does not collect conversation content.
+- Does not send prompts or AI responses to any server.
+- Does not collect account information.
+- Does not use analytics or tracking.
+- Does not use advertising services.
+- Does not use external APIs or servers.
+- Stores only the user's RTL/LTR preference locally using Chrome's Storage API.
+
+For more information, see the [Privacy Policy](https://github.com/rasoolzia/ai-rtl/blob/main/Privacy.md).
 
 ## 🛠️ Technical Details
 
+Make AIs RTL uses Chrome's Manifest V3 extension platform.
+
 ### Architecture
 
-- **Manifest V3** - Modern Chrome extension platform
-- **Service Worker** - Background script for state management
-- **Content Script** - Injects RTL styles into supported sites
-- **Storage API** - Persists user preferences
+- **Manifest V3** - Chrome extension platform.
+- **Service Worker** - Manages the user's RTL/LTR preference and extension icon.
+- **Content Script** - Applies RTL/LTR styles to supported AI chat pages.
+- **Storage API** - Stores the user's direction preference locally.
+- **Site Configuration** - Keeps platform-specific selectors in a separate configuration file.
 
-### File Structure
+### Project Structure
 
+```text
+├── icons/
+│   ├── icon_default16.png
+│   ├── icon_default48.png
+│   ├── icon_default128.png
+│   ├── icon_ltr16.png
+│   ├── icon_ltr48.png
+│   ├── icon_ltr128.png
+│   ├── icon_rtl16.png
+│   ├── icon_rtl48.png
+│   └── icon_rtl128.png
+├── background.js
+├── content.js
+├── sites.js
+├── manifest.json
+├── Privacy.md
+└── README.md
 ```
-├── background.js      # Service worker - handles icon and state
-├── content.js         # Content script - applies RTL styles
-├── sites.js          # Site configuration and selectors
-├── manifest.json     # Extension manifest
-└── icons/            # Extension icons
-    ├── icon_rtl16.png
-    ├── icon_rtl48.png
-    ├── icon_rtl128.png
-    ├── icon_ltr16.png
-    ├── icon_ltr48.png
-    └── icon_ltr128.png
-```
 
-## 🔧 Configuration
+## 🔧 Adding a New AI Platform
 
-### Adding New Sites
+Supported platforms are configured in `sites.js`.
 
-To add support for additional AI chatbots, edit `sites.js`:
+Add a new site configuration:
 
-```javascript
-const SITES = [
-  // ... existing sites ...
-  {
-    hosts: ['example.com', 'chat.example.com'],
-    selectors: {
-      user: '.user-message-selector',
-      assistant: '.assistant-message-selector',
-      code: '.code-block-selector',
-    },
+```js
+{
+  hosts: ['example.com'],
+  selectors: {
+    user: '.user-message-selector',
+    assistant: '.assistant-message-selector',
+    code: '.code-block-selector',
   },
-];
-```
-
-Then update `host_permissions` in `manifest.json`:
-
-```json
-"host_permissions": [
-  "https://example.com/*",
-  "https://chat.example.com/*"
-]
-```
-
-And add to `content_scripts.matches`:
-
-```json
-"matches": [
-  "https://example.com/*",
-  "https://chat.example.com/*"
-]
-```
-
-## 🎨 Customization
-
-The extension applies RTL styling with the following CSS rules:
-
-```css
-.site-rtl-active .user-message,
-.site-rtl-active .assistant-message {
-  direction: rtl !important;
-  text-align: right !important;
-}
-
-.site-rtl-active .assistant-message .code-block {
-  direction: ltr !important;
-  text-align: left !important;
 }
 ```
 
-This ensures:
+Then add the corresponding domain to both `host_permissions` and `content_scripts.matches` in `manifest.json`.
 
-- Messages are right-aligned
-- Text flows right-to-left
-- Code blocks maintain LTR formatting
-
-## 🐛 Troubleshooting
-
-### Extension not working on a supported site
-
-- Refresh the page after toggling
-- Check if the site's DOM structure has changed
-- Verify the extension has permission for the site
-
-### Icon not updating
-
-- Click the extension icon to force a state toggle
-- Restart the browser
-
-### Site not displaying correctly
-
-- Try toggling RTL off and on again
-- Report the issue with site details and screenshot
+After making the changes, test the platform thoroughly before submitting a change.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome.
 
-1. **Add new sites** - Submit PRs with new site configurations
-2. **Fix bugs** - Report or fix issues with existing sites
-3. **Improve styling** - Better RTL support for complex layouts
-4. **Documentation** - Improve this README
+You can contribute by:
 
-### Development Setup
+- Adding support for new AI platforms.
+- Fixing selectors when a platform changes its UI.
+- Improving RTL behavior.
+- Reporting bugs.
+- Improving documentation.
 
-1. Clone the repository
-2. Make your changes
-3. Load the extension in Chrome (Developer Mode)
-4. Test thoroughly
-5. Submit a pull request
+Before submitting a pull request, test the extension on the affected platform and make sure existing supported platforms still work correctly.
 
-## 📝 License
+## 🐛 Reporting Issues
 
-MIT License - feel free to use, modify, and distribute.
+If the extension does not work correctly on a supported platform, please [open an issue](https://github.com/rasoolzia/ai-rtl/issues).
 
-## 💬 Feedback
+When reporting a problem, include:
 
-Found a bug or have a suggestion? [Open an issue](https://github.com/yourusername/make-ais-rtl/issues) or submit a pull request.
+- The affected platform.
+- A description of the issue.
+- A screenshot when possible.
+- Whether RTL or LTR mode was enabled.
 
-## 🙏 Acknowledgments
+Please do not include private conversations, personal information, API keys, or other sensitive data in issue reports.
 
-- Inspired by the need for better RTL support in AI tools
-- Built with accessibility in mind
+## 📄 License
+
+This project is licensed under the MIT License.
+
+See the [LICENSE](https://github.com/rasoolzia/ai-rtl/blob/main/LICENSE) file for details.
 
 ---
 
-**Enjoy using AI chatbots in your preferred reading direction!** 🌍
+Built to make AI tools a little more comfortable for RTL users. 🌍

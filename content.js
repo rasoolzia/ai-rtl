@@ -1,22 +1,27 @@
 const STYLE_ID = '__ai_rtl_style__';
 
-const site = SITES.find((site) => site.hosts.includes(location.hostname));
+const site = SITES.find((item) => item.hosts.includes(location.hostname));
 
 if (!site) {
-  console.warn('Unsupported site');
+  console.warn('[AI RTL] Unsupported site:', location.hostname);
 } else {
   injectStyle();
 
-  chrome.storage.local.get('isRTL', ({ isRTL = true }) => {
-    document.body.classList.toggle('site-rtl-active', isRTL);
+  chrome.storage.local.get({ isRTL: true }, ({ isRTL }) => {
+    setRTL(isRTL);
   });
 
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local') return;
-    if (!changes.isRTL) return;
-
-    document.body.classList.toggle('site-rtl-active', changes.isRTL.newValue);
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== 'local' || !changes.isRTL) return;
+    setRTL(changes.isRTL.newValue);
   });
+}
+
+function setRTL(enabled) {
+  document.documentElement.classList.toggle(
+    'site-rtl-active',
+    Boolean(enabled),
+  );
 }
 
 function injectStyle() {
@@ -28,16 +33,20 @@ function injectStyle() {
     document.head.appendChild(style);
   }
 
-  style.textContent = `
-.site-rtl-active ${site.selectors.user},
-.site-rtl-active ${site.selectors.assistant}{
-  direction: rtl !important;
-  text-align: right !important;
-}
+  const { user, assistant, code } = site.selectors;
+  const codeSelector = code.join(', ');
 
-.site-rtl-active ${site.selectors.assistant} ${site.selectors.code}{
-  direction: ltr !important;
-  text-align: left !important;
-}
-`;
+  style.textContent = `
+    .site-rtl-active ${user},
+    .site-rtl-active ${assistant} {
+      direction: rtl !important;
+      text-align: right !important;
+    }
+
+    .site-rtl-active ${user} ${codeSelector},
+    .site-rtl-active ${assistant} ${codeSelector} {
+      direction: ltr !important;
+      text-align: left !important;
+    }
+  `;
 }
